@@ -108,7 +108,7 @@ export default function Home() {
   };
 
   return (
-    <main className="relative scroll-smooth overflow-y-scroll h-screen w-full bg-gradient-to-b from-zinc-900 via-zinc-950 to-black text-white">
+    <main className="relative snap-y snap-mandatory scroll-smooth overflow-y-scroll h-screen w-full bg-gradient-to-b from-zinc-900 via-zinc-950 to-black text-white">
       {/* Scroll-interactive background */}
       <div className="absolute top-0 left-0 w-full h-[300%] bg-[radial-gradient(#d1d5db_1px,transparent_1px)] [background-size:40px_40px] opacity-20 blur-2xl z-0 pointer-events-none"></div>
 
@@ -123,7 +123,7 @@ export default function Home() {
       )}
 
       {/* Hero Section */}
-      <section className="h-screen flex items-center justify-center flex-col text-center px-4 z-10">
+      <section className="snap-start h-screen flex items-center justify-center flex-col text-center px-4 z-10">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -142,7 +142,7 @@ export default function Home() {
       </section>
 
       {/* Description Section */}
-      <section className="h-screen flex items-center justify-center px-4 text-center z-10">
+      <section className="snap-start h-screen flex items-center justify-center px-4 text-center z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -156,7 +156,7 @@ export default function Home() {
       </section>
 
       {/* Dual Function Section */}
-      <section className="h-screen flex items-center justify-center px-6 z-10">
+      <section className="snap-start h-screen flex items-center justify-center px-6 z-10">
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 gap-8"
           initial={{ opacity: 0 }}
