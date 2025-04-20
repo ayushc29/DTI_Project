@@ -13,16 +13,22 @@ export default function Home() {
   const [previewUrl, setPreviewUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  const [refImage, setRefImage] = useState(null);
+  const [crowdImage, setCrowdImage] = useState(null);
+  const [matchResultUrl, setMatchResultUrl] = useState("");
+  const [matchLoading, setMatchLoading] = useState(false);
+  const [matchErrorMsg, setMatchErrorMsg] = useState("");
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
-        // If the user is not logged in, redirect to the login page
         router.replace("/login");
       } else {
-        setIsAuthenticated(true); // User is authenticated
+        setIsAuthenticated(true);
       }
     });
 
@@ -57,13 +63,50 @@ export default function Home() {
     }
   };
 
+  const handleFaceMatch = async () => {
+    if (!refImage || !crowdImage) {
+      setMatchErrorMsg("Please upload both reference and crowd images.");
+      return;
+    }
+
+    setMatchLoading(true);
+    setMatchErrorMsg("");
+    setMatchResultUrl("");
+
+    const formData = new FormData();
+    formData.append("reference", refImage);
+    formData.append("crowd", crowdImage);
+
+    try {
+      const res = await fetch("http://localhost:8000/match-face/", {
+        method: "POST",
+        body: formData,
+      });
+    
+      if (!res.ok) throw new Error("Face match failed");
+    
+      const data = await res.json();
+    
+      if (data.match_found) {
+        const imageUrl = "http://localhost:8000/get-matched/";
+        setMatchResultUrl(imageUrl);
+      } else {
+        setMatchErrorMsg("No match found in the image.");
+      }
+    } catch (err) {
+      setMatchErrorMsg(err.message);
+    } finally {
+      setMatchLoading(false);
+    }
+  };
+
   const handleSignOut = async () => {
     await auth.signOut();
-    router.replace("/login"); // Redirect to login page after sign out
+    router.replace("/login");
   };
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white p-6 flex items-center justify-center flex-col relative">
+    <main className="min-h-screen bg-zinc-950 text-white p-6 flex flex-col items-center justify-start relative">
       {isAuthenticated && (
         <Button
           onClick={handleSignOut}
@@ -74,7 +117,8 @@ export default function Home() {
         </Button>
       )}
 
-      <Card className="w-full max-w-lg p-6">
+      {/* License Plate Section */}
+      <Card className="w-full max-w-lg p-6 mb-8">
         <CardContent className="flex flex-col space-y-4">
           <h1 className="text-2xl font-semibold mb-4">License Plate Detector</h1>
 
@@ -89,6 +133,32 @@ export default function Home() {
             <img
               src={previewUrl}
               alt="Enhanced Plate"
+              className="mt-4 rounded-lg border"
+            />
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Face Matcher Section */}
+      <Card className="w-full max-w-lg p-6">
+        <CardContent className="flex flex-col space-y-4">
+          <h2 className="text-xl font-semibold mb-4">Face Match from Crowd</h2>
+
+          <Input type="file" accept="image/*" onChange={(e) => setRefImage(e.target.files[0])} />
+          <label className="text-sm text-zinc-400">Reference Image</label>
+
+          <Input type="file" accept="image/*" onChange={(e) => setCrowdImage(e.target.files[0])} />
+          <label className="text-sm text-zinc-400">Crowd Image</label>
+
+          <Button onClick={handleFaceMatch} disabled={matchLoading}>
+            {matchLoading ? "Matching..." : "Upload & Match"}
+          </Button>
+
+          {matchErrorMsg && <p className="text-red-500">{matchErrorMsg}</p>}
+          {matchResultUrl && (
+            <img
+              src={matchResultUrl}
+              alt="Matched Face"
               className="mt-4 rounded-lg border"
             />
           )}
