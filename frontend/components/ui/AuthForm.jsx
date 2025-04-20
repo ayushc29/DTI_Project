@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import Image from 'next/image';
 
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
@@ -28,31 +29,38 @@ export default function AuthForm() {
   };
 
   return (
-    <main className="relative flex items-center justify-center h-screen w-full bg-gradient-to-b from-zinc-900 via-zinc-950 to-black text-white">
-      {/* Scroll-interactive blurred silver pattern */}
-      <div className="absolute top-0 left-0 w-full h-[200%] bg-[radial-gradient(#d1d5db_1px,transparent_1px)] [background-size:40px_40px] opacity-20 blur-2xl z-0 pointer-events-none" />
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-zinc-900 via-zinc-950 to-black text-white px-6">
+      {/* Logo and Title */}
+      <div className="flex flex-col items-center mb-8">
+        <Image src="/logo.png" alt="Logo" width={100} height={100} className="mb-4" />
+        <h1 className="text-4xl font-bold">GOD'S EYE</h1>
+        <p className="text-zinc-400 mt-1">AI-Based Surveillance System</p>
+      </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-md p-8 bg-zinc-900 border border-zinc-700 rounded-2xl shadow-lg">
-        <h1 className="text-3xl font-bold mb-6">{isLogin ? 'Login' : 'Sign Up'}</h1>
+      {/* Auth Box */}
+      <div className="bg-zinc-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <h2 className="text-xl font-semibold text-center mb-4">
+          {isLogin ? 'Login to Your Account' : 'Create an Account'}
+        </h2>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="p-3 rounded-lg bg-zinc-800 border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            className="p-2 rounded bg-zinc-700 border border-zinc-600 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="p-3 rounded-lg bg-zinc-800 border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            className="p-2 rounded bg-zinc-700 border border-zinc-600 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 p-3 rounded-lg font-semibold transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 p-2 rounded font-semibold transition-colors duration-200"
           >
             {isLogin ? 'Login' : 'Sign Up'}
           </button>
@@ -60,11 +68,11 @@ export default function AuthForm() {
 
         <button
           onClick={toggleMode}
-          className="mt-6 text-sm text-zinc-400 hover:text-white transition"
+          className="mt-4 text-sm text-zinc-400 hover:text-white text-center w-full"
         >
           {isLogin ? 'New here? Create an account' : 'Already have an account? Login'}
         </button>
       </div>
-    </main>
+    </div>
   );
 }
