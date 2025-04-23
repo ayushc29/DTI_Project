@@ -70,33 +70,38 @@ export default function Home() {
       setMatchErrorMsg("Please upload both reference and crowd images.");
       return;
     }
-
+  
     setMatchLoading(true);
     setMatchErrorMsg("");
     setMatchResultUrl("");
-
+  
     const formData = new FormData();
     formData.append("reference", refImage);
     formData.append("crowd", crowdImage);
-
+  
     try {
       const res = await fetch("http://localhost:8000/match-face/", {
         method: "POST",
         body: formData,
       });
-
-      if (!res.ok) throw new Error("Face match failed");
-
+  
       const data = await res.json();
-
+  
+      if (!res.ok) {
+        throw new Error(data?.error || "Face match failed");
+      }
+  
       if (data.match_found) {
-        const imageUrl = "http://localhost:8000/get-matched/";
+        // Append timestamp to avoid cache
+        const imageUrl = `http://localhost:8000/get-matched/?t=${new Date().getTime()}`;
         setMatchResultUrl(imageUrl);
       } else {
         setMatchErrorMsg("No match found in the image.");
       }
+  
     } catch (err) {
-      setMatchErrorMsg(err.message);
+      // Only show error if it’s not due to 404 from image fetch
+      setMatchErrorMsg(err.message || "Something went wrong");
     } finally {
       setMatchLoading(false);
     }
@@ -357,7 +362,7 @@ export default function Home() {
                     : i === 2
                     ? "AI Dev"
                     : i === 3
-                    ? "UI/UX Designer"
+                    ? "Full Stack Dev"
                     : "Full Stack Dev"}
                 </p>
                 <p className="text-sm text-gray-300 mb-3">
@@ -366,8 +371,8 @@ export default function Home() {
                     : i === 2
                     ? "Worked on face recognition and detection."
                     : i === 3
-                    ? "Designed layout, color schemes, and user experience flows."
-                    : "Connected FastAPI backend to frontend & image upload pipeline. Created FireBase Authentication"}
+                    ? "Created Firebase Authentication and Frontend UIs."
+                    : "Connected FastAPI backend to frontend & image upload pipeline."}
                 </p>
               </motion.div>
             ))}
