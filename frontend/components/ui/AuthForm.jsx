@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import Image from 'next/image';
+import { motion } from "framer-motion";
 
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
@@ -31,11 +32,14 @@ export default function AuthForm() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-zinc-900 via-zinc-950 to-black text-white px-6">
       {/* Logo and Title */}
-      <div className="flex flex-col items-center mb-8">
-        <Image src="/logo.png" alt="Logo" width={100} height={100} className="mb-4" />
-        <h1 className="text-4xl font-bold">GOD'S EYE</h1>
-        <p className="text-zinc-400 mt-1">AI-Based Surveillance System</p>
-      </div>
+      <motion.h1
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.1 }}
+          className="text-6xl font-extrabold p-8 tracking-wider bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent"
+        >
+          GOD'S EYE
+        </motion.h1>
 
       {/* Auth Box */}
       <div className="bg-zinc-800 p-8 rounded-2xl shadow-xl w-full max-w-md">

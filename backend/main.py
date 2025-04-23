@@ -138,7 +138,14 @@ async def match_face(reference: UploadFile = File(...), crowd: UploadFile = File
 
 @app.get("/get-enhanced/")
 async def get_enhanced_image():
-    return FileResponse(SAVE_DIR / "enhanced_plate.jpg")
+    return FileResponse(
+        SAVE_DIR / "enhanced_plate.jpg",
+        headers={
+            "Cache-Control": "no-store, no-cache, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0"
+        }
+    )
 
 @app.get("/get-matched/")
 async def get_matched():
